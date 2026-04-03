@@ -134,6 +134,46 @@ export function setCharTimeline(
 }
 
 export function setAllTimeline() {
+  const educationTimeline = gsap.timeline({
+    scrollTrigger: {
+      trigger: ".education-section",
+      start: "top 35%",
+      toggleActions: "play none none reverse",
+      fastScrollEnd: true,
+      invalidateOnRefresh: true,
+    },
+  });
+
+  // Animate header accent line
+  educationTimeline
+    .fromTo(
+      ".header-accent",
+      { width: 0, opacity: 0 },
+      { width: 80, opacity: 1, duration: 0.4, ease: "power3.out" },
+      0
+    )
+    // Animate education header text
+    .fromTo(
+      ".education-header h2",
+      { opacity: 0, y: 20 },
+      { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" },
+      0.1
+    )
+    // Animate cards in staggered sequence
+    .fromTo(
+      ".education-card",
+      { opacity: 0, y: 40 },
+      { opacity: 1, y: 0, duration: 0.6, stagger: 0.15, ease: "power3.out" },
+      0.3
+    )
+    // Animate progress line
+    .fromTo(
+      ".education-progress-line",
+      { scaleX: 0 },
+      { scaleX: 1, duration: 0.8, ease: "power2.inOut" },
+      0.5
+    );
+
   const careerTimeline = gsap.timeline({
     scrollTrigger: {
       trigger: ".career-section",
