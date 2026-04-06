@@ -1,10 +1,10 @@
 import "./styles/Work.css";
+import { useEffect } from "react";
 import WorkImage from "./WorkImage";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { useGSAP } from "@gsap/react";
 
-gsap.registerPlugin(useGSAP, ScrollTrigger);
+gsap.registerPlugin(ScrollTrigger);
 
 const projects = [
   {
@@ -46,7 +46,7 @@ const projects = [
 ];
 
 const Work = () => {
-  useGSAP(() => {
+  useEffect(() => {
     const section = document.querySelector(".work-section") as HTMLElement | null;
     const flex = document.querySelector(".work-flex") as HTMLElement | null;
     if (!section || !flex) return;
@@ -112,6 +112,7 @@ const Work = () => {
       ScrollTrigger.getById("work")?.kill();
     };
   }, []);
+
   return (
     <div className="work-section" id="work">
       <div className="work-container section-container">
