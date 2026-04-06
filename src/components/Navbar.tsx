@@ -1,25 +1,34 @@
 import { useEffect } from "react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { ScrollSmoother } from "gsap-trial/ScrollSmoother";
 import HoverLinks from "./HoverLinks";
 import { gsap } from "gsap";
 import "./styles/Navbar.css";
 
-gsap.registerPlugin(ScrollTrigger, ScrollSmoother);
-export let smoother: { paused: (state: boolean) => void } | null = null;
+gsap.registerPlugin(ScrollTrigger);
+
+type SmootherApi = {
+  paused: (state: boolean) => void;
+  scrollTo: (target: string, smooth?: boolean, position?: string) => void;
+  kill: () => void;
+};
+
+export let smoother: SmootherApi | null = null;
 
 const Navbar = () => {
   useEffect(() => {
     const desktop = window.innerWidth > 1024;
     smoother = desktop
-      ? ScrollSmoother.create({
-          wrapper: "#smooth-wrapper",
-          content: "#smooth-content",
-          smooth: 0.68,
-          smoothTouch: 0.08,
-          effects: false,
-          normalizeScroll: false,
-        })
+      ? {
+          paused: () => {
+            // Native scrolling has no paused state; kept for API compatibility.
+          },
+          scrollTo: (target: string) => {
+            document.querySelector(target)?.scrollIntoView({ behavior: "smooth", block: "start" });
+          },
+          kill: () => {
+            // No cleanup required for native scrolling fallback.
+          },
+        }
       : null;
 
     ScrollTrigger.config({
@@ -40,7 +49,7 @@ const Navbar = () => {
           let target = e.currentTarget as HTMLAnchorElement;
           let section = target.getAttribute("data-href");
           if (section && smoother) {
-            (smoother as ScrollSmoother).scrollTo(section, true, "top 8%");
+            smoother.scrollTo(section, true, "top 8%");
             return;
           }
           if (section) {
@@ -61,7 +70,7 @@ const Navbar = () => {
     return () => {
       handlers.forEach(({ el, fn }) => el.removeEventListener("click", fn));
       window.removeEventListener("resize", onResize);
-      (smoother as ScrollSmoother | null)?.kill();
+      smoother?.kill();
       smoother = null;
     };
   }, []);
