@@ -88,7 +88,7 @@ export default function setSplitText() {
       );
     });
 
-    gsap.utils.toArray<HTMLElement>(".title").forEach((title) => {
+    gsap.utils.toArray<HTMLElement>(".title:not(.title-no-split)").forEach((title) => {
       const chars = splitChars(title);
       if (!chars.length) return;
       gsap.fromTo(
